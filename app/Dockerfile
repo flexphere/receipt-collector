@@ -9,13 +9,13 @@ RUN unzip NotoSansCJKjp-hinted.zip && \
     mkdir -p /usr/share/fonts/noto && \
     cp *.otf /usr/share/fonts/noto && \
     chmod 644 -R /usr/share/fonts/noto/ && \
+    rm -rf /noto && \
+    rm -rf /usr/share/fonts/truetype/dejavu && \
+    rm -rf /usr/share/fonts/truetype/liberation && \
     fc-cache -fv
-RUN rm -rf /noto
 
 WORKDIR /app
-
 COPY ./src .
-
 RUN npm install
 
 CMD ["npm", "start"]
