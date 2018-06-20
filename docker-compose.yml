@@ -1,0 +1,7 @@
+app:
+  build: ./app
+  volumes:
+    - ./downloads:/app/downloads
+  environment:
+    AMZN_USER: youraccount@amazon.co.jp
+    AMZN_PASS: yourpassword
