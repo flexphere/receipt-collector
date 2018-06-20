@@ -1,8 +1,9 @@
+const os = require('os');
 const { Chromeless } = require('chromeless');
 
 const url = {
   login:
-    'https://www.amazon.co.jp/ap/signin?_encoding=UTF8&ignoreAuthState=1&openid.assoc_handle=jpflex&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp%2F%3Fref_%3Dnav_signin&switch_account=',
+    'https://www.amazon.co.jp/ap/signin?openid.assoc_handle=jpflex&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0',
   list: 'https://www.amazon.co.jp/gp/css/order-history?orderFilter=last30',
   detail: {
     default:
@@ -26,7 +27,7 @@ const run = async auth => {
     .click('#signInSubmit')
     .wait('body');
 
-  console.log('Retrieving orders...');
+  console.log('Searching for orders...');
   // Get OrderID of each purchase
   let orders = await chromeless.goto(url.list).evaluate(() => {
     const orderID = [].map.call(
@@ -50,15 +51,16 @@ const run = async auth => {
     let URL = TPL.replace('__ORDERID__', order.id);
 
     if (order.digital) {
-      screentshots.push(
-        await chromeless
-          .goto(URL)
-          .wait('.pmts_billing_address_block')
-          .screenshot()
-      );
+      await chromeless.goto(URL).wait('.pmts_billing_address_block');
     } else {
-      screentshots.push(await chromeless.goto(URL).screenshot());
+      await chromeless.goto(URL);
     }
+
+    screentshots.push(
+      await chromeless.screenshot('body', {
+        filePath: os.tmpdir() + `/${order.id}.png`
+      })
+    );
 
     console.log(`Captured: ${order.id}`);
   }
