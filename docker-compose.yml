@@ -3,5 +3,6 @@ app:
   volumes:
     - ./downloads:/app/downloads
   environment:
+    TZ: Asia/Tokyo
     AMZN_USER: youraccount@amazon.co.jp
     AMZN_PASS: yourpassword
