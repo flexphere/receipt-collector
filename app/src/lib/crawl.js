@@ -80,11 +80,15 @@ const screenShot = async orders => {
     files.push(
       await chromeless
         .evaluate(() => {
-          document.body.style.cssText += `
-            font-family: 'Noto Sans Japanese' !important;
-            font-style: normal;
-            font-weight: 100;
-          `;
+          let style = document.createElement('style');
+          style.setAttribute('type', 'text/css');
+          document
+            .getElementsByTagName('head')
+            .item(0)
+            .appendChild(style);
+          style.sheet.insertRule(
+            '*{ font-family: "Noto Sans Japanese" !important;  }'
+          );
         })
         .screenshot('body', {
           filePath: os.tmpdir() + `/${order.id}.png`
