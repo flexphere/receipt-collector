@@ -4,5 +4,5 @@ app:
     - ./downloads:/app/downloads
   environment:
     TZ: Asia/Tokyo
-    AMZN_USER: "${AMZN_USER}"
-    AMZN_PASS: "${AMZN_PASS}"
+    AMZN_USER: ${AMZN_USER}
+    AMZN_PASS: ${AMZN_PASS}

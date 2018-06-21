@@ -14,10 +14,11 @@ const url = {
   }
 };
 
-const chromeless = new Chromeless();
+module.exports = async auth => {
+  const chromeless = new Chromeless();
 
-const login = async auth => {
-  console.log('Logging in to Amazon');
+  // Login -----------------------
+  process.stdout.write('Logging in to Amazon... ');
   await chromeless
     .goto(url.login)
     .type(auth.user, 'input[name="email"]')
@@ -26,12 +27,11 @@ const login = async auth => {
     .type(auth.pass, 'input[name="password"]')
     .click('#signInSubmit')
     .wait('body');
-};
+  process.stdout.write('done\n');
 
-const listOrders = async () => {
+  // listOrders -----------------------
   let page_url,
     page_orders,
-    page_num = 1,
     startIndex = 0,
     orders = [];
 
@@ -39,32 +39,32 @@ const listOrders = async () => {
   do {
     page_url = url.list.replace('__START_INDEX__', startIndex);
 
-    console.log(`page:${page_num}`);
+    console.log(`Loading Page: ${page_url}`);
 
-    page_orders = await chromeless.goto(page_url).evaluate(() => {
-      const orderID = [].map.call(
-        document.querySelectorAll('.actions .value'),
-        el => {
-          return {
-            id: el.innerText,
-            digital: el.innerText[0] == 'D'
-          };
-        }
-      );
-      return orderID;
-    });
+    page_orders = await chromeless
+      .goto(page_url)
+      .wait('#yourOrdersContent')
+      .evaluate(() => {
+        const orderID = [].map.call(
+          document.querySelectorAll('.actions .value'),
+          el => {
+            return {
+              id: el.innerText,
+              digital: el.innerText[0] == 'D'
+            };
+          }
+        );
+        return orderID;
+      });
 
     orders = orders.concat(page_orders);
     startIndex += 10;
-    page_num += 1;
   } while (page_orders.length);
 
   console.log(`${orders.length} orders found.`);
 
-  return orders;
-};
+  // screenShot -----------------------
 
-const screenShot = async orders => {
   let files = [];
 
   for (order of orders) {
@@ -86,17 +86,6 @@ const screenShot = async orders => {
     console.log(`Captured: ${order.id}`);
   }
 
+  await chromeless.end();
   return files;
-};
-
-module.exports = async auth => {
-  try {
-    await login(auth);
-    const orders = await listOrders();
-    const files = await screenShot(orders);
-    await chromeless.end();
-    return files;
-  } catch (e) {
-    console.log(e);
-  }
 };

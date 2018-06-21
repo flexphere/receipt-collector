@@ -14,9 +14,11 @@ const main = async () => {
     const archive_path = `${__dirname}/downloads/`;
     const archive_name = `receipt_${timestamp}.zip`;
 
-    console.log(`Creating archive ${archive_name}`);
-    archive(`${archive_path}${archive_name}`, screenshots);
-    console.log('Done.');
+    if (screenshots.length) {
+      console.log(`Creating archive ${archive_name}`);
+      archive(`${archive_path}${archive_name}`, screenshots);
+      console.log('Done.');
+    }
   } catch (e) {
     console.log(e);
   }
