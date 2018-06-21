@@ -15,7 +15,9 @@ const url = {
 };
 
 module.exports = async auth => {
-  const chromeless = new Chromeless();
+  const chromeless = new Chromeless({
+    waitTimeout: 30000
+  });
 
   // Login -----------------------
   process.stdout.write('Logging in to Amazon... ');
