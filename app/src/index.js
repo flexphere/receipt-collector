@@ -4,6 +4,7 @@ const archive = require('./lib/zip');
 
 const chromeOptions = {
   launchChrome: false,
+  waitTimeout: 20000,
   remote: {
     endpointUrl:
       'https://5z7533s5xk.execute-api.ap-northeast-1.amazonaws.com/dev',
