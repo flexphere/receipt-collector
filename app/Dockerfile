@@ -1,18 +1,20 @@
-FROM markadams/chromium-xvfb-js
+# FROM markadams/chromium-xvfb-js
 
-RUN apt-get update
-RUN apt-get install unzip
+# RUN apt-get update
+# RUN apt-get install unzip
 
-WORKDIR /noto
-ADD https://noto-website.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip /noto 
-RUN unzip NotoSansCJKjp-hinted.zip && \
-    mkdir -p /usr/share/fonts/noto && \
-    cp *.otf /usr/share/fonts/noto && \
-    chmod 644 -R /usr/share/fonts/noto/ && \
-    rm -rf /noto && \
-    rm -rf /usr/share/fonts/truetype/dejavu && \
-    rm -rf /usr/share/fonts/truetype/liberation && \
-    fc-cache -fv
+# WORKDIR /noto
+# ADD https://noto-website.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip /noto 
+# RUN unzip NotoSansCJKjp-hinted.zip && \
+#     mkdir -p /usr/share/fonts/noto && \
+#     cp *.otf /usr/share/fonts/noto && \
+#     chmod 644 -R /usr/share/fonts/noto/ && \
+#     rm -rf /noto && \
+#     rm -rf /usr/share/fonts/truetype/dejavu && \
+#     rm -rf /usr/share/fonts/truetype/liberation && \
+#     fc-cache -fv
+
+FROM node:9
 
 WORKDIR /app
 COPY ./src .

@@ -1,6 +1,15 @@
 const moment = require('moment');
-const crawl = require('./lib/crawl');
+const amazon = require('./lib/crawler/amazon');
 const archive = require('./lib/zip');
+
+const chromeOptions = {
+  launchChrome: false,
+  remote: {
+    endpointUrl:
+      'https://5z7533s5xk.execute-api.ap-northeast-1.amazonaws.com/dev',
+    apiKey: '4NjGoCeFf94nbT7YjfhnKnM1dqn20nO3UG0W6Du6'
+  }
+};
 
 const auth = {
   user: process.env.AMZN_USER,
@@ -9,18 +18,45 @@ const auth = {
 
 const main = async () => {
   try {
-    const screenshots = await crawl(auth);
-    const timestamp = moment().format('YYYYMMDDHHmmss');
-    const archive_path = `${__dirname}/downloads/`;
-    const archive_name = `receipt_${timestamp}.zip`;
+    const screenshots = await amazon(auth, chromeOptions);
 
-    if (screenshots.length) {
+    const downloads = screenshots.map(url => {
+      return download(url);
+    });
+
+    const files = await Promise.all(downloads);
+
+    if (files.length) {
+      const timestamp = moment().format('YYYYMMDDHHmmss');
+      const archive_path = `${__dirname}/downloads/`;
+      const archive_name = `receipt_${timestamp}.zip`;
       console.log(`Creating archive ${archive_name}`);
-      archive(`${archive_path}${archive_name}`, screenshots);
+      archive(`${archive_path}${archive_name}`, files);
       console.log('Done.');
     }
   } catch (e) {
     console.log(e);
   }
 };
+
+const download = url => {
+  const os = require('os');
+  const fs = require('fs');
+  const request = require('request');
+
+  const options = { method: 'GET', url: url, encoding: null };
+  const filename = os.tmpdir() + '/' + url.split('/').pop();
+
+  return new Promise((resolve, reject) => {
+    request(options, (err, res, body) => {
+      if (!err && res.statusCode == 200) {
+        fs.writeFileSync(filename, body, 'binary');
+        resolve(filename);
+      } else {
+        reject(err);
+      }
+    });
+  });
+};
+
 main();
