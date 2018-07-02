@@ -1,5 +1,7 @@
 FROM markadams/chromium-xvfb-js
 
+ENV TZ Asia/Tokyo
+
 RUN apt-get update
 RUN apt-get install unzip
 
@@ -16,6 +18,7 @@ RUN unzip NotoSansCJKjp-hinted.zip && \
 
 WORKDIR /app
 COPY ./src .
-RUN npm install
+RUN mkdir /rc && \
+    npm install
 
 CMD ["npm", "start"]

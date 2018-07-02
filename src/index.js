@@ -4,12 +4,12 @@ const archive = require('./lib/zip');
 
 const chromeOptions = {
   waitTimeout: 20000
-  // remote: {
-  //   endpointUrl:
-  //     'https://5z7533s5xk.execute-api.ap-northeast-1.amazonaws.com/dev',
-  //   apiKey: '4NjGoCeFf94nbT7YjfhnKnM1dqn20nO3UG0W6Du6'
-  // }
 };
+
+if (!process.env.AMZN_USER || !process.env.AMZN_PASS) {
+  console.log('missing credentials');
+  process.exit();
+}
 
 const auth = {
   user: process.env.AMZN_USER,
@@ -20,22 +20,20 @@ const main = async () => {
   try {
     const screenshots = await amazon(auth, chromeOptions);
 
-    // const downloads = screenshots.map(url => {
-    //   return download(url);
-    // });
-
-    // const files = await Promise.all(downloads);
-
     if (screenshots.length) {
       const timestamp = moment().format('YYYYMMDDHHmmss');
-      const archive_path = `${__dirname}/downloads/`;
+      const archive_path = `/rc/`;
       const archive_name = `receipt_${timestamp}.zip`;
       console.log(`Creating archive ${archive_name}`);
       archive(`${archive_path}${archive_name}`, screenshots);
       console.log('Done.');
+    } else {
+      console.log('No Orders were found.');
     }
+    process.exit(0);
   } catch (e) {
     console.log(e);
+    process.exit(1);
   }
 };
 
