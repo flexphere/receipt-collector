@@ -3,13 +3,12 @@ const amazon = require('./lib/crawler/amazon');
 const archive = require('./lib/zip');
 
 const chromeOptions = {
-  launchChrome: false,
-  waitTimeout: 20000,
-  remote: {
-    endpointUrl:
-      'https://5z7533s5xk.execute-api.ap-northeast-1.amazonaws.com/dev',
-    apiKey: '4NjGoCeFf94nbT7YjfhnKnM1dqn20nO3UG0W6Du6'
-  }
+  waitTimeout: 20000
+  // remote: {
+  //   endpointUrl:
+  //     'https://5z7533s5xk.execute-api.ap-northeast-1.amazonaws.com/dev',
+  //   apiKey: '4NjGoCeFf94nbT7YjfhnKnM1dqn20nO3UG0W6Du6'
+  // }
 };
 
 const auth = {
