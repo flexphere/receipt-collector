@@ -66,7 +66,7 @@ module.exports = async (auth, options) => {
     let page = tpl.replace('__ORDERID__', order.id);
 
     if (order.digital) {
-      await chromeless.goto(page).wait('.pmts_billing_address_block');
+      await chromeless.goto(page); //.wait('.pmts_billing_address_block');
     } else {
       await chromeless.goto(page);
     }
