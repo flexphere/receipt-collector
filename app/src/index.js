@@ -20,18 +20,18 @@ const main = async () => {
   try {
     const screenshots = await amazon(auth, chromeOptions);
 
-    const downloads = screenshots.map(url => {
-      return download(url);
-    });
+    // const downloads = screenshots.map(url => {
+    //   return download(url);
+    // });
 
-    const files = await Promise.all(downloads);
+    // const files = await Promise.all(downloads);
 
-    if (files.length) {
+    if (screenshots.length) {
       const timestamp = moment().format('YYYYMMDDHHmmss');
       const archive_path = `${__dirname}/downloads/`;
       const archive_name = `receipt_${timestamp}.zip`;
       console.log(`Creating archive ${archive_name}`);
-      archive(`${archive_path}${archive_name}`, files);
+      archive(`${archive_path}${archive_name}`, screenshots);
       console.log('Done.');
     }
   } catch (e) {
