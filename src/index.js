@@ -1,60 +1,35 @@
 const moment = require('moment');
 const amazon = require('./lib/crawler/amazon');
 const archive = require('./lib/zip');
-
-const chromeOptions = {
-  waitTimeout: 20000
-};
+const log = require('./lib/log');
 
 if (!process.env.AMZN_USER || !process.env.AMZN_PASS) {
-  console.log('missing credentials');
-  process.exit();
+  log.println('missing credentials');
+  process.exit(1);
 }
 
-const auth = {
+const CREDENTIALS = {
   user: process.env.AMZN_USER,
   pass: process.env.AMZN_PASS
 };
 
+const DL_PATH = process.env.DLPATH || '/rc';
+
+const chromeOptions = {
+  waitTimeout: 20000,
+  dlpath: DL_PATH
+};
+
 const main = async () => {
   try {
-    const screenshots = await amazon(auth, chromeOptions);
-
-    if (screenshots.length) {
-      const timestamp = moment().format('YYYYMMDDHHmmss');
-      const archive_path = `/rc/`;
-      const archive_name = `receipt_${timestamp}.zip`;
-      console.log(`Creating archive ${archive_name}`);
-      archive(`${archive_path}${archive_name}`, screenshots);
-      console.log('Done.');
-    } else {
-      console.log('No Orders were found.');
-    }
-    process.exit(0);
+    const screenshots = await amazon(CREDENTIALS, chromeOptions);
+    if (!screenshots.length) throw new Error('No Orders were found.');
+    log.println('Done.');
   } catch (e) {
     console.log(e);
     process.exit(1);
   }
-};
-
-const download = url => {
-  const os = require('os');
-  const fs = require('fs');
-  const request = require('request');
-
-  const options = { method: 'GET', url: url, encoding: null };
-  const filename = os.tmpdir() + '/' + url.split('/').pop();
-
-  return new Promise((resolve, reject) => {
-    request(options, (err, res, body) => {
-      if (!err && res.statusCode == 200) {
-        fs.writeFileSync(filename, body, 'binary');
-        resolve(filename);
-      } else {
-        reject(err);
-      }
-    });
-  });
+  process.exit(0);
 };
 
 main();

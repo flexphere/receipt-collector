@@ -5,7 +5,7 @@ module.exports.debug = msg => {
 };
 
 module.exports.debugln = msg => {
-  if (process.env.DEBUG === 'true') {
+  if (process.env.DEBUG == 'true') {
     msg = 'debug: ' + msg + '\n';
     process.stdout.write(msg);
   }

@@ -73,7 +73,7 @@ module.exports = async (auth, options) => {
 
     screenshots.push(
       await chromeless.screenshot('body', {
-        filePath: os.tmpdir() + `/${order.id}.png`
+        filePath: options.dlpath + `/${order.id}.png`
       })
     );
 
