@@ -6,5 +6,5 @@ $ docker run \
     -e AMZN_USER=$YOUR_ACCOUNT \
     -e AMZN_PASS=$YOUR_PASSWORD \
     -v `pwd`:/rc \
-    -it flexphere/receipt-collector
+    -t flexphere/receipt-collector
 ```

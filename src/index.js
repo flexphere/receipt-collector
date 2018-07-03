@@ -1,6 +1,4 @@
-const moment = require('moment');
 const amazon = require('./lib/crawler/amazon');
-const archive = require('./lib/zip');
 const log = require('./lib/log');
 
 if (!process.env.AMZN_USER || !process.env.AMZN_PASS) {
